@@ -1,0 +1,32 @@
+name: Bad CI
+
+# запускается на все пуши и пул-реквесты 
+on: [push, pull_request]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@main   # привязка к branch/main вместо зафиксированной версии
+
+      - name: Setup Node
+        uses: actions/setup-node@latest  # плавающий тег
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run tests
+        # тесты просто логируют и не имеют строгой проверки
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        # хардкод секретов и команда деплоя без проверок
+        env:
+          DEPLOY_TOKEN: my-hardcoded-token-12345
+        run: |
+          echo "Deploying with token $DEPLOY_TOKEN"
+          # представим что тут деплой
